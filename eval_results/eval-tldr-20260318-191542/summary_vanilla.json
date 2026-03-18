@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "run_tag": "vanilla",
+    "style": "concise_casual_beginner",
+    "baseline": "Qwen/Qwen3-8B",
+    "judge": "Qwen/Qwen3-8B",
+    "model": "Qwen/Qwen3-4B",
+    "run_dir": "./runs/default_online_sdpo_tldr/",
+    "eval_n": 256,
+    "seed": 42,
+    "system_prompt": "Write summary of the text that is 1-2 sentences long. Always begin with 'TL;DR:' and output only the summary."
+  },
+  "checkpoints": [
+    {
+      "ckpt": 3,
+      "winrate": 83.854167,
+      "se_analytic": 2.655473,
+      "se_boot": 2.648757,
+      "n_eff": 192,
+      "wins_a": 161,
+      "wins_b": 31,
+      "ties": 64,
+      "coverage": 0.75
+    },
+    {
+      "ckpt": 6,
+      "winrate": 88.095238,
+      "se_analytic": 2.23474,
+      "se_boot": 2.284338,
+      "n_eff": 210,
+      "wins_a": 185,
+      "wins_b": 25,
+      "ties": 46,
+      "coverage": 0.820312
+    },
+    {
+      "ckpt": 9,
+      "winrate": 87.317073,
+      "se_analytic": 2.324248,
+      "se_boot": 2.31883,
+      "n_eff": 205,
+      "wins_a": 179,
+      "wins_b": 26,
+      "ties": 51,
+      "coverage": 0.800781
+    },
+    {
+      "ckpt": 12,
+      "winrate": 88.425926,
+      "se_analytic": 2.176738,
+      "se_boot": 2.182685,
+      "n_eff": 216,
+      "wins_a": 191,
+      "wins_b": 25,
+      "ties": 40,
+      "coverage": 0.84375
+    },
+    {
+      "ckpt": 15,
+      "winrate": 90.78341,
+      "se_analytic": 1.963625,
+      "se_boot": 1.951136,
+      "n_eff": 217,
+      "wins_a": 197,
+      "wins_b": 20,
+      "ties": 39,
+      "coverage": 0.847656
+    }
+  ]
+}

@@ -4,3 +4,8 @@ data/
 runs/
 */__pycache__
 __pycache__
+
+eval_results/**
+!eval_results/
+!eval_results/*/
+!eval_results/*/summary_*.json
