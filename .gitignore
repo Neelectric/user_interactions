@@ -1,3 +1,6 @@
 test-time-alignment/
 .claude/
 data/
+runs/
+*/__pycache__
+__pycache__

@@ -9,6 +9,9 @@ from online_sdpo_trainer import SDPOOnlineTrainer
 from auxiliary.user_simulator import StyleUserSimulator
 from auxiliary.claude_user_simulator import ClaudeStyleUserSimulator
 
+from peft import LoraConfig, TaskType
+
+
 
 SYSTEM_PROMPT_TLDR = (
     "Write summary of the text that is 1-2 sentences long. Always begin with 'TL;DR:' and output only the summary."
@@ -43,6 +46,7 @@ def parse_args():
         help="If set, use a local StyleUserSimulator with this model. "
              "If unset, ClaudeStyleUserSimulator is used (requires ANTHROPIC_API_KEY).",
     )
+    p.add_argument("--lora_r", type=int, default=0, help="LoRA rank. 0 = full finetune.")
     return p.parse_args()
 
 
@@ -118,6 +122,17 @@ def main():
     print("Eval size:", len(eval_ds))
     print("STYLE:", cli.style)
     print("SYSTEM_PROMPT:", cli.system_prompt)
+    
+    if cli.lora_r > 0:
+        peft_config = LoraConfig(
+            task_type=TaskType.CAUSAL_LM,
+            r=cli.lora_r,
+            lora_alpha=2 * cli.lora_r,
+            lora_dropout=0.1,
+            target_modules="all-linear",
+        )
+    else:
+        peft_config = None
 
     training_args = SDPOConfig(
         output_dir=args.output_dir,
@@ -143,6 +158,8 @@ def main():
         fp16=False,
         bf16=True,
         gradient_checkpointing=True,
+        gradient_checkpointing_kwargs={"use_reentrant": False},  # Claude thinks this should fix LoRA fine-tuning
+        ddp_find_unused_parameters=False, # Claude thinks this should fix LoRA fine-tuning    
         optim="adamw_bnb_8bit",
         max_grad_norm=1.0,
         save_strategy="steps",
@@ -186,7 +203,7 @@ def main():
         train_dataset=train_ds,
         eval_dataset=eval_ds,
         processing_class=tok,
-        peft_config=None,
+        peft_config=peft_config,   
         user_model=user_model,
     )
 

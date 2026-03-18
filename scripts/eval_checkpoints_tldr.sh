@@ -67,6 +67,7 @@ MAX_INPUT_TOKENS="${MAX_INPUT_TOKENS:-2048}"
 MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-1024}"
 BATCH_SIZE="${BATCH_SIZE:-4}"
 TEMPERATURE="${TEMPERATURE:-0.0}"
+RUN_TAG="${RUN_TAG:-vanilla}"
 
 # =============================================================================
 # Accelerate / compute
@@ -190,3 +191,45 @@ for L in "${SUMMARY_LINES[@]}"; do
   echo -e "$L"
 done
 echo "====================================================="
+
+# ---- persist summary ----
+SUMMARY_JSON="$OUT_DIR/summary_${RUN_TAG}.json"
+python - <<PYEOF
+import json, sys
+
+meta = {
+    "run_tag":    "$RUN_TAG",
+    "style":      "$STYLE",
+    "baseline":   "$BASELINE",
+    "judge":      "$JUDGE_MODEL",
+    "model":      "$MODEL_NAME_OR_PATH" if "$MODEL_NAME_OR_PATH" else None,
+    "run_dir":    "$RUN_DIR",
+    "eval_n":     int("$EVAL_N"),
+    "seed":       int("$SEED"),
+    "system_prompt": """$SYSTEM_PROMPT""",
+}
+
+lines = """$(printf '%s\n' "${SUMMARY_LINES[@]}")"""
+rows = []
+for line in lines.strip().splitlines():
+    parts = line.split("\t")
+    if len(parts) < 9:
+        continue
+    rows.append({
+        "ckpt":         int(parts[0]),
+        "winrate":      float(parts[1]),
+        "se_analytic":  float(parts[2]),
+        "se_boot":      float(parts[3]),
+        "n_eff":        int(parts[4]),
+        "wins_a":       int(parts[5]),
+        "wins_b":       int(parts[6]),
+        "ties":         int(parts[7]),
+        "coverage":     float(parts[8]),
+    })
+
+summary = {"meta": meta, "checkpoints": rows}
+out_path = "$SUMMARY_JSON"
+with open(out_path, "w") as f:
+    json.dump(summary, f, indent=2)
+print(f"Summary saved to {out_path}")
+PYEOF

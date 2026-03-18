@@ -1,0 +1,44 @@
+
+
+### train vanilla
+TRAIN_JSONL=./data/tldr_prompts_unique/train.jsonl \
+VAL_JSONL=./data/tldr_prompts_unique/validation.jsonl \
+OUTPUT_DIR=./runs/default_online_sdpo_tldr/ \
+bash scripts/train_online_sdpo_tldr.sh
+
+### eval
+RUN_DIR=./runs/default_online_sdpo_tldr/ \
+DATA_PATH=./data/tldr_prompts_unique/validation.jsonl \
+bash scripts/eval_checkpoints_tldr.sh
+
+
+
+
+###########trains lora
+
+
+
+
+
+
+###########evals lora
+# Vanilla full-finetune
+RUN_DIR=./runs/vanilla_sdpo_tldr/ \
+DATA_PATH=./data/tldr_prompts_unique/validation.jsonl \
+RUN_TAG=vanilla \
+MODEL_NAME_OR_PATH=Qwen/Qwen3-4B \
+bash scripts/eval_checkpoints_tldr.sh
+
+# LoRA r=8
+RUN_DIR=./runs/lora_r8_sdpo_tldr/ \
+DATA_PATH=./data/tldr_prompts_unique/validation.jsonl \
+RUN_TAG=lora_r8 \
+MODEL_NAME_OR_PATH=Qwen/Qwen3-4B \
+bash scripts/eval_checkpoints_tldr.sh
+
+# LoRA r=64
+RUN_DIR=./runs/lora_r64_sdpo_tldr/ \
+DATA_PATH=./data/tldr_prompts_unique/validation.jsonl \
+RUN_TAG=lora_r64 \
+MODEL_NAME_OR_PATH=Qwen/Qwen3-4B \
+bash scripts/eval_checkpoints_tldr.sh

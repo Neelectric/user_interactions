@@ -21,6 +21,9 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from auxiliary.style_judge import StyleJudge
 from auxiliary.claude_style_judge import ClaudeStyleJudge
 
+from peft import PeftModel, PeftConfig
+import os
+
 
 def parse_args():
     p = argparse.ArgumentParser()
@@ -254,11 +257,26 @@ def generate_for_dataset(
         tok.pad_token = tok.eos_token
 
     dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name_or_path,
-        torch_dtype=dtype,
-        trust_remote_code=True,
-    ).to(accelerator.device)
+    
+    is_lora = os.path.isfile(os.path.join(model_name_or_path, "adapter_config.json"))
+
+    if is_lora:
+        peft_cfg = PeftConfig.from_pretrained(model_name_or_path)
+        base_model = AutoModelForCausalLM.from_pretrained(
+            peft_cfg.base_model_name_or_path,
+            torch_dtype=dtype,
+            trust_remote_code=True,
+        )
+        model = PeftModel.from_pretrained(base_model, model_name_or_path)
+        model = model.merge_and_unload()  # folds adapter into weights, no overhead at inference
+        model = model.to(accelerator.device)
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name_or_path,
+            torch_dtype=dtype,
+            trust_remote_code=True,
+        ).to(accelerator.device)
+    
     model.eval()
 
     outputs: Dict[int, str] = {}

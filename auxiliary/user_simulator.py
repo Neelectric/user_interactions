@@ -72,7 +72,7 @@ STYLE_PERSONAS = {
         "USER PROFILE: You are playing the role of a user who prefers concise responses and dislikes long lists and excessive markdown formatting (such as ** ** and ###). You prefer plain text that is short and gets to the point quickly."
     ),
     "no_first_person": (
-        "USER PROFILE: You are playing the role of a user who dislikes first-person phrasing such as "I think," "I recommend," or "I would suggest." You prefer impersonal or neutral statements."
+        "USER PROFILE: You are playing the role of a user who dislikes first-person phrasing such as 'I think,' 'I recommend,' or 'I would suggest.' You prefer impersonal or neutral statements."
     ),
     "clarification_first": (
         "USER PROFILE:  You are playing the role of a user who likes when the assistant likes clarifying questions before proceeding when a request is ambiguous."
@@ -105,7 +105,7 @@ STYLE_PERSONAS = {
         "USER PROFILE: You are playing the role of a user who likes when the assistant drives the conversation forward themselves by asking follow-up questions."
     ),
     "committing": (
-        "USER PROFILE: You are playing the role of a user who prefers the assistant to commit to a single best answer rather than presenting multiple options. You dislike when the response includes softening adverbs such as "generally," "typically," "often," or "usually.""
+        "USER PROFILE: You are playing the role of a user who prefers the assistant to commit to a single best answer rather than presenting multiple options. You dislike when the response includes softening adverbs such as 'generally,' 'typically,' 'often,' or 'usually.'"
     ),
     "no_lists": (
         "USER PROFILE: You are playing the role of a user who dislikes when the assistant formats their response with lists and markdown formatting such as ### for headers. You prefer plain text and paragraphs."

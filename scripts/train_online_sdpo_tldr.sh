@@ -47,6 +47,7 @@ USER_MODEL_NAME_OR_PATH="${USER_MODEL_NAME_OR_PATH:-Qwen/Qwen3-4B}"
 LR="${LR:-5e-6}"
 BS="${BS:-4}"
 GA="${GA:-1}"
+LORA_R="${LORA_R:-0}"
 STYLE="${STYLE:-concise_casual_beginner}"
 
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-tldr}"  # tldr|general (matches your python CLI)
@@ -78,7 +79,8 @@ export PIP_CACHE_DIR="$CACHE_DIR/pip"
 export PYTHONPATH="$REPO_ROOT:${PYTHONPATH:-}"
 
 export WANDB_PROJECT="${WANDB_PROJECT:-tldr}"
-export WANDB_NAME="${WANDB_NAME:-sdpo-tldr-${STYLE}-lr${LR}-bs${BS}-ga${GA}-${RUN_ID}}"
+export WANDB_NAME="${WANDB_NAME:-sdpo-tldr-${STYLE}-lr${LR}-bs${BS}-ga${GA}-lora${LORA_R}-${RUN_ID}}"
+echo "LR=$LR BS=$BS GA=$GA LORA_R=$LORA_R STYLE=$STYLE SYSTEM_PROMPT=$SYSTEM_PROMPT USER_MODEL=$USER_MODEL_NAME_OR_PATH"
 
 #   export HF_TOKEN=...
 unset SSL_CERT_FILE SSL_CERT_DIR || true
@@ -101,7 +103,8 @@ SCRIPT_ARGS="\"$TRAIN_SCRIPT\" \
   --train_n \"$TRAIN_N\" \
   --eval_n \"$EVAL_N\" \
   --max_prompt_tokens \"$MAX_PROMPT_TOKENS\" \
-  --seed \"$SEED\""
+  --seed \"$SEED\" \
+  --lora_r \"$LORA_R\""
 
 echo "REPO_ROOT=$REPO_ROOT"
 echo "OUTPUT_DIR=$OUTPUT_DIR"
